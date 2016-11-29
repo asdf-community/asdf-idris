@@ -1,21 +1,25 @@
-sudo: true
-language: c
+language: generic
 
 matrix:
   include:
     - os: linux
-      dist: xenial
-      sudo: required
+      services:
+        - docker
+      script:
+        - |
+          cat <<-EOF | docker run -i ubuntu bash -
+          set -e
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get update && apt-get install -y curl haskell-platform
+          git clone https://github.com/asdf-vm/asdf.git
+          . asdf/asdf.sh
+          asdf plugin-test idris https://github.com/vic/asdf-idris.git 'idris --help'
+          EOF
+
     - os: osx
-
-before_script:
-  - git clone https://github.com/asdf-vm/asdf.git
-  - . asdf/asdf.sh
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install cabal-install; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install cabal-install; fi
-
-script:
-  - which cabal
-  - cabal --version
-  - asdf plugin-test idris https://github.com/vic/asdf-idris.git 'idris --help'
-
+      before_script:
+        - brew install cabal-install
+        - git clone https://github.com/asdf-vm/asdf.git
+        - . asdf/asdf.sh
+      script:
+        - asdf plugin-test idris https://github.com/vic/asdf-idris.git 'idris --help'
