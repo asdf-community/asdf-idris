@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+osx_releases=http://www.idris-lang.org/pkgs/
+cabal_releases=http://hackage.haskell.org/package/idris
+
+sort_cmd='sort'
+if sort --help | grep -q -- '-V'; then
+  sort_cmd='sort -V'
+fi
+
+function osx_versions () {
+  curl -s "$osx_releases" | grep -oE '\"idris-[0-9\.]+\.pkg\"' | sed 's/"idris-//' | sed 's/.pkg"//'
+}
+
+function cabal_versions () {
+  curl -s "$cabal_releases" | grep -oE 'package/idris-[0-9\.]+' | uniq | sed 's|package/idris-||'
+}
+
+if [ "${ASDF_IDRIS_INSTALL}" == "cabal" -o "Darwin" != "$(uname -s)" ]; then
+  versions="$(cabal_versions | $sort_cmd)"
+else
+  versions="$(osx_versions | $sort_cmd) current"
+fi
+
+echo $versions

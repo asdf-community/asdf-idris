@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+
+cabal_install_idris() {
+  local install_type=$1
+  local version=$2
+  local install_path=$3
+
+  if [ "$TMPDIR" = "" ]; then
+    local tmp_download_dir=$(mktemp -d -t idris_build_XXXXXX)
+  else
+    local tmp_download_dir=$TMPDIR
+  fi
+
+  if ! cabal --version ; then
+    echo "You need a working Haskell Platform for installing Idris ${install_type} ${version}"
+    echo "follow the source installation instructions at:"
+    echo "http://github.com/vic/asdf-idris"
+    exit 1
+  fi
+
+  # running this in a subshell
+  # we don't want to disturb current working dir
+  (
+    set -e
+    mkdir -p $install_path
+
+    if [ "${install_type}" == "version" ]; then
+      mkdir -p $tmp_download_dir/cabal
+      cd $tmp_download_dir/cabal
+
+      cabal sandbox init
+      cabal update
+      cabal install --prefix "${install_path}" "idris-${version}"
+
+    else
+      local tar_path=$(downloaded_file_path $install_type $version $tmp_download_dir)
+      curl -Lo "$tar_path" "$(dev_download_url $version)"
+
+      tar zxf $tar_path -C $install_path --strip-components=1 || exit 1
+      cd $install_path
+
+      cabal sandbox init
+      cabal update
+      make
+    fi
+
+  ) || (rm -rf $install_path; exit 1)
+}
+
+dev_download_url() {
+  local version=$1
+  echo "https://github.com/idris-lang/idris-dev/archive/${version}.tar.gz"
+}
+
+osx_install_idris() {
+  local install_type=$1
+  local version=$2
+  local install_path=$3
+
+  if [ "$TMPDIR" = "" ]; then
+    local tmp_download_dir=$(mktemp -d -t idris_build_XXXXXX)
+  else
+    local tmp_download_dir=$TMPDIR
+  fi
+
+  local pkg_path=$(downloaded_file_path $install_type $version $tmp_download_dir)
+  curl -Lo "$pkg_path" "$(osx_download_url $version)"
+
+  # running this in a subshell
+  # we don't want to disturb current working dir
+  (
+    set -e
+    mkdir -p $tmp_download_dir/pkg
+    cd $tmp_download_dir/pkg
+
+    # unzip the osx pkg content
+    xar -xf $pkg_path
+    cat Payload | gunzip -dc | cpio -i
+
+    mkdir -p $install_path
+    mv $tmp_download_dir/pkg/usr/local/* $install_path/
+  )
+}
+
+
+downloaded_file_path() {
+  local install_type=$1
+  local version=$2
+  local tmp_download_dir=$3
+  local pkg_name="idris-${install_type}-${version}.pkg"
+  echo "$tmp_download_dir/$pkg_name"
+}
+
+osx_download_url() {
+  local version=$1
+  echo "http://www.idris-lang.org/pkgs/idris-${version}.pkg"
+}
+
+if [ "$(uname -s)" == "Darwin" -a "${ASDF_IDRIS_INSTALL}" == "" -a "${ASDF_INSTALL_TYPE}" == "version" ]; then
+  installer=osx_install_idris
+else
+  installer=cabal_install_idris
+fi
+
+$installer $ASDF_INSTALL_TYPE $ASDF_INSTALL_VERSION $ASDF_INSTALL_PATH
