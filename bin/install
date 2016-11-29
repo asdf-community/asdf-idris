@@ -5,7 +5,7 @@ cabal_install_idris() {
   local version=$2
   local install_path=$3
 
-  local tmp_download_dir=$(mktemp -d -t idris)
+  local tmp_download_dir=$(mktemp -d -t idris_XXXXXXX)
 
   if ! cabal --version ; then
     echo "You need a working Haskell Platform for installing Idris ${install_type} ${version}"
