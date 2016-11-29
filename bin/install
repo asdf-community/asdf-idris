@@ -27,12 +27,12 @@ cabal_install_idris() {
 
 
     if [ "${install_type}" == "version" ]; then
-      cabal install --prefix "${install_path}" "idris-${version}"
+      cabal install --verbose=0 --prefix "${install_path}" "idris-${version}"
     else
       local tar_path=$(downloaded_file_path $install_type $version $tmp_download_dir)
       curl -Lo "$tar_path" "$(dev_download_url $version)"
       tar zxf $tar_path --strip-components=1
-      env CABALFLAGS="--prefix '${install_path}'" make
+      env CABALFLAGS="--verbose=0 --prefix '${install_path}'" make
     fi
 
   ) || (rm -rf $install_path; exit 1)

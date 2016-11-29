@@ -1,21 +1,20 @@
 sudo: true
 language: c
-env:
-  - PATH=$HOME/.cabal/bin:$PATH
-script: asdf plugin-test idris https://github.com/vic/asdf-idris.git 'idris --help'
-before_script:
-  - git clone https://github.com/asdf-vm/asdf.git
-  - . asdf/asdf.sh
-  - |
-    if [ "$(uname -s)" == "Linux" ]; then
-      sudo apt-get install cabal-install
-    else
-      brew install cabal-install
-    fi
-
-    cabal update
-    cabal install cabal-install
-    cabal --version
 os:
   - linux
   - osx
+
+before_script:
+  - git clone https://github.com/asdf-vm/asdf.git
+  - . asdf/asdf.sh
+  - if [ "$(uname -s)" == "Darwin" ]; then brew install cabal-install; fi
+  - if [ "$(uname -s)" == "Linux" ]; then sudo apt-get install cabal-install; fi
+  - |
+    if [ "$(uname -s)" == "Linux" ]; then
+      cabal update
+      cabal install --verbose=0 --prefix /usr cabal-install
+    fi
+  - cabal --version
+
+script: asdf plugin-test idris https://github.com/vic/asdf-idris.git 'idris --help'
+
