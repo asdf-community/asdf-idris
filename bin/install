@@ -35,6 +35,9 @@ cabal_install_idris() {
       env CABALFLAGS="--verbose=0 --prefix '${install_path}'" make
     fi
 
+    # remove binary installed by cabal, but not part of idris
+    rm -f $install_path/bin/cheapskate
+
   ) || (rm -rf $install_path; exit 1)
 }
 
