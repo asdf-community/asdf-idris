@@ -1,4 +1,4 @@
-language: haskell
+language: c
 script: env CI=true asdf plugin-test idris https://github.com/vic/asdf-idris.git 'idris --help'
 before_script:
   - git clone https://github.com/asdf-vm/asdf.git
