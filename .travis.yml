@@ -12,9 +12,12 @@ before_script:
   - |
     if [ "$(uname -s)" == "Linux" ]; then
       cabal update
-      cabal install --verbose=0 --prefix /usr cabal-install
+      cabal install --verbose=0 cabal-install
     fi
-  - cabal --version
 
-script: asdf plugin-test idris https://github.com/vic/asdf-idris.git 'idris --help'
+script:
+  - export PATH=$HOME/.cabal/bin:$PATH
+  - which cabal
+  - cabal --version
+  - asdf plugin-test idris https://github.com/vic/asdf-idris.git 'idris --help'
 
