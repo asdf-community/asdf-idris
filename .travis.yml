@@ -7,7 +7,7 @@ matrix:
         - docker
       script:
         - |
-          cat <<-EOF | docker run -i ubuntu bash -
+          cat <<-EOF | travis_wait 30 docker run -i ubuntu bash -
           set -e
           export DEBIAN_FRONTEND=noninteractive
           export CABALFLAGS=--ghc-option=-O0
@@ -34,4 +34,4 @@ matrix:
         - git clone https://github.com/asdf-vm/asdf.git
         - . asdf/asdf.sh
       script:
-        - asdf plugin-test idris https://github.com/vic/asdf-idris.git 'idris --help'
+        - travis_wait 30 asdf plugin-test idris https://github.com/vic/asdf-idris.git 'idris --help'
