@@ -34,5 +34,5 @@ for installing any aditional build-time dependency for your platform.
 
 ## Use
 
-Check [asdf](https://github.com/asdf-vm/asdf) readme for instructions on how to install & manage versions of Elm.
+Check [asdf](https://github.com/asdf-vm/asdf) readme for instructions on how to install & manage versions of Idris.
 

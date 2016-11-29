@@ -24,24 +24,19 @@ cabal_install_idris() {
     set -e
     mkdir -p $install_path
 
+    mkdir -p $tmp_download_dir/cabal
+    cd $tmp_download_dir/cabal
+    cabal sandbox init
+    cabal update
+
+
     if [ "${install_type}" == "version" ]; then
-      mkdir -p $tmp_download_dir/cabal
-      cd $tmp_download_dir/cabal
-
-      cabal sandbox init
-      cabal update
       cabal install --prefix "${install_path}" "idris-${version}"
-
     else
       local tar_path=$(downloaded_file_path $install_type $version $tmp_download_dir)
       curl -Lo "$tar_path" "$(dev_download_url $version)"
-
-      tar zxf $tar_path -C $install_path --strip-components=1 || exit 1
-      cd $install_path
-
-      cabal sandbox init
-      cabal update
-      make
+      tar zxf $tar_path --strip-components=1
+      env CABALFLAGS="--prefix '${install_path}'" make
     fi
 
   ) || (rm -rf $install_path; exit 1)
