@@ -1,16 +1,20 @@
 sudo: true
 language: c
-os:
-  - linux
-  - osx
+
+matrix:
+  include:
+    - os: linux
+      dist: xenial
+      sudo: required
+    - os: osx
 
 before_script:
   - git clone https://github.com/asdf-vm/asdf.git
   - . asdf/asdf.sh
-  - if [ "$(uname -s)" == "Darwin" ]; then brew install cabal-install; fi
-  - if [ "$(uname -s)" == "Linux" ]; then sudo apt-get install cabal-install; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install cabal-install; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install cabal-install; fi
   - |
-    if [ "$(uname -s)" == "Linux" ]; then
+    if [ "$TRAVIS_OS_NAME" == "linux" ]; then
       cabal update
       cabal install --verbose=0 cabal-install
     fi
