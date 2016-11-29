@@ -7,7 +7,10 @@ matrix:
         - docker
       script:
         - |
-          cat <<-EOF | travis_wait 30 docker run -i ubuntu bash -
+          bash -c "while true; do echo \$(date) - travis building ...; sleep 540; done" &
+          export PING_LOOP_PID=$!
+        - |
+          cat <<-EOF | docker run -i ubuntu bash -
           set -e
           export DEBIAN_FRONTEND=noninteractive
           export CABALFLAGS=--ghc-option=-O0
@@ -17,6 +20,8 @@ matrix:
           . asdf/asdf.sh
           asdf plugin-test idris https://github.com/vic/asdf-idris.git 'idris --help'
           EOF
+      after_script:
+        - kill -9 $PING_LOOP_PID
 
     - os: osx
       before_script:
@@ -34,4 +39,9 @@ matrix:
         - git clone https://github.com/asdf-vm/asdf.git
         - . asdf/asdf.sh
       script:
-        - travis_wait 30 asdf plugin-test idris https://github.com/vic/asdf-idris.git 'idris --help'
+        - |
+          bash -c "while true; do echo \$(date) - travis building ...; sleep 540; done" &
+          export PING_LOOP_PID=$!
+        - asdf plugin-test idris https://github.com/vic/asdf-idris.git 'idris --help'
+      after_script:
+        - kill -9 $PING_LOOP_PID
