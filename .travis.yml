@@ -9,10 +9,13 @@ before_script:
   - |
     if [ "$(uname -s)" == "Linux" ]; then
       sudo apt-get install cabal-install
-      cabal install cabal-install
     else
       brew install cabal-install
     fi
+
+    cabal update
+    cabal install cabal-install
+    cabal --version
 os:
   - linux
   - osx
