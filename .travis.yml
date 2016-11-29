@@ -10,7 +10,8 @@ matrix:
           cat <<-EOF | docker run -i ubuntu bash -
           set -e
           export DEBIAN_FRONTEND=noninteractive
-          apt-get update && apt-get install -y git curl haskell-platform
+          echo installing haskell platform
+          apt-get update -qq && apt-get install -qq git curl haskell-platform
           git clone https://github.com/asdf-vm/asdf.git
           . asdf/asdf.sh
           asdf plugin-test idris https://github.com/vic/asdf-idris.git 'idris --help'
@@ -18,16 +19,16 @@ matrix:
 
     - os: osx
       before_script:
-        - brew install cabal-install
         - git clone https://github.com/asdf-vm/asdf.git
         - . asdf/asdf.sh
       script:
         - asdf plugin-test idris https://github.com/vic/asdf-idris.git 'idris --help'
 
     - os: osx
+      env: ASDF_IDRIS_INSTALL=cabal
       before_script:
         - brew install cabal-install
         - git clone https://github.com/asdf-vm/asdf.git
         - . asdf/asdf.sh
       script:
-        - env ASDF_IDRIS_INSTALL=cabal asdf plugin-test idris https://github.com/vic/asdf-idris.git 'idris --help'
+        - asdf plugin-test idris https://github.com/vic/asdf-idris.git 'idris --help'
