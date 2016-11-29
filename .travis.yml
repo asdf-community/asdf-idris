@@ -8,7 +8,7 @@ before_script:
     if [ "$(uname -s)" == "Linux" ]; then
       sudo apt-get install haskell-platform
     else
-      sudo brew install cabal-install
+      brew install cabal-install
     fi
 os:
   - linux
