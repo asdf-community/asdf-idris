@@ -11,7 +11,6 @@ asdf plugin-add idris https://github.com/vic/asdf-idris.git
 
 ## Requirements
 
-
 #### OSX
 
 For OSX this plugin has no aditional requirements as it will download and install the 
@@ -28,7 +27,16 @@ If you are on OSX and want to install from `cabal` be sure to set
 When installing on other platforms (Linux, Windows), or when installing a specific source revision,
 you will need to have `cabal install` and `cabal sandbox` working on your system. 
 
-The easiest way to get them is by installing the [Haskell Platform](https://www.haskell.org/platform/).
+
+The easiest way to get them is by using an [asdf managed haskell](http://github.com/vic/asdf-haskell).
+After installing haskell with asdf, execute:
+
+```shell
+stack install cabal-install
+asdf reshim haskell
+```
+
+Another way is to manually install the [Haskell Platform](https://www.haskell.org/platform/).
 Follow the [Installation Instructions](https://github.com/idris-lang/Idris-dev/wiki/Installation-Instructions)
 for installing any aditional build-time dependency for your platform.
 
