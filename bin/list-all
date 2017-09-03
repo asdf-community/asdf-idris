@@ -10,11 +10,11 @@ function sort_versions() {
 }
 
 function osx_versions () {
-  curl -s "$osx_releases" | grep -oE '\"idris-[0-9\.]+\.pkg\"' | sed 's/"idris-//' | sed 's/.pkg"//'
+  curl -sL "$osx_releases" | grep -oE '\"idris-[0-9\.]+\.pkg\"' | sed 's/"idris-//' | sed 's/.pkg"//'
 }
 
 function cabal_versions () {
-  curl -s "$cabal_releases" | grep -oE 'package/idris-[0-9\.]+' | uniq | sed 's|package/idris-||'
+  curl -sL "$cabal_releases" | grep -oE 'package/idris-[0-9\.]+' | uniq | sed 's|package/idris-||'
 }
 
 if [ "${ASDF_IDRIS_INSTALL}" == "cabal" -o "Darwin" != "$(uname -s)" ]; then
