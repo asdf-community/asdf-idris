@@ -14,7 +14,7 @@ function osx_versions () {
 }
 
 function cabal_versions () {
-  curl -sL "$cabal_releases" | grep -oE 'package/idris-[0-9\.]+' | uniq | sed 's|package/idris-||'
+  curl -sL "$cabal_releases" | grep -oE 'package/idris-[0-9\.]+' | sort -u | sed 's|package/idris-||'
 }
 
 if [ "${ASDF_IDRIS_INSTALL}" == "cabal" -o "Darwin" != "$(uname -s)" ]; then
